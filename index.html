@@ -3,81 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pull.AI - Login</title>
+  <title>Pull Search</title>
   <style>
     body {
       margin: 0;
       padding: 0;
+      background-color: #fff;
       font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
-      background-size: 400% 400%;
-      animation: gradient 12s ease infinite;
-      height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .container {
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      padding: 40px;
-      text-align: center;
-      width: 350px;
-      animation: fadeIn 1s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .logo {
-      font-size: 50px;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
-
-    .logo span:nth-child(1) { color: #4285F4; }
-    .logo span:nth-child(2) { color: #EA4335; }
-    .logo span:nth-child(3) { color: #FBBC05; }
-    .logo span:nth-child(4) { color: #34A853; }
-    .logo span:nth-child(5) { color: #EA4335; }
-
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      background-color: #4285F4;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #3367D6;
-    }
-
-    /* Tela de busca */
-    .search-screen {
-      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #fff;
     }
+
+    .logo {
+      font-size: 60px;
+      font-weight: bold;
+      color: #4285F4;
+      letter-spacing: -1px;
+      margin-bottom: 30px;
+    }
+
+    .logo span:nth-child(2) { color: #EA4335; }
+    .logo span:nth-child(3) { color: #FBBC05; }
+    .logo span:nth-child(4) { color: #4285F4; }
+    .logo span:nth-child(5) { color: #34A853; }
+    .logo span:nth-child(6) { color: #EA4335; }
 
     .search-box {
       display: flex;
@@ -102,93 +54,48 @@
       font-size: 16px;
     }
 
+    button {
+      background-color: #f8f9fa;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 30px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #f1f3f4;
+    }
+
     .gcse-search {
       margin-top: 40px;
       width: 100%;
     }
-
-    .history {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .logout-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #EA4335;
-      color: white;
-      padding: 8px 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background: #c5221f;
-    }
   </style>
 </head>
 <body>
-  <!-- Tela de Login -->
-  <div class="container" id="login-screen">
-    <div class="logo">
-      <span>P</span><span>u</span><span>l</span><span>l</span><span>.AI</span>
-    </div>
-    <button onclick="goToSearch()">Entrar com conta</button>
-    <button onclick="goToSearch()">Criar conta</button>
-    <button onclick="goToSearch()">Usar sem conta</button>
+  <div class="logo">
+    <span>P</span><span>u</span><span>l</span><span>l</span><span>.</span><span>AI</span>
   </div>
 
-  <!-- Tela de Busca -->
-  <div class="search-screen" id="search-screen">
-    <button class="logout-btn" onclick="logout()">Sair</button>
-    <div class="logo" style="margin-bottom: 20px;">
-      <span>P</span><span>u</span><span>l</span><span>l</span><span>.AI</span>
-    </div>
-
-    <div class="search-box">
-      <input id="searchInput" type="text" placeholder="Pesquise no Pull...">
-    </div>
-
-    <button onclick="doSearch()">Buscar</button>
-
-    <div class="gcse-search"></div>
-    <div class="history" id="history"></div>
+  <div class="search-box">
+    <input id="searchInput" type="text" placeholder="Pesquise no Pull...">
   </div>
+
+  <button onclick="doSearch()">Buscar</button>
 
   <script async src="https://cse.google.com/cse.js?cx=456655f16500e46db"></script>
+  <div class="gcse-search"></div>
+
   <script>
-    const loginScreen = document.getElementById('login-screen');
-    const searchScreen = document.getElementById('search-screen');
-    const historyDiv = document.getElementById('history');
-
-    let historyList = [];
-
-    function goToSearch() {
-      loginScreen.style.display = 'none';
-      searchScreen.style.display = 'flex';
-    }
-
-    function logout() {
-      searchScreen.style.display = 'none';
-      loginScreen.style.display = 'block';
-    }
-
     function doSearch() {
       const query = document.getElementById('searchInput').value;
       if (query.trim() !== "") {
         const element = google.search.cse.element.getElement('standard0');
         if (element) element.execute(query);
-
-        historyList.unshift(query);
-        updateHistory();
       }
-    }
-
-    function updateHistory() {
-      historyDiv.innerHTML = "<b>Pesquisas recentes:</b> " + historyList.slice(0, 5).join(", ");
     }
   </script>
 </body>
