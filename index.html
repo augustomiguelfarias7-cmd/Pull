@@ -72,7 +72,52 @@
     .gcse-search {
       margin-top: 40px;
       width: 100%;
+      /* *** MUDANÇA AQUI PARA ESCONDER A BARRA DE PESQUISA DO GOOGLE *** */
+      **display: none !important;** /* Remove completamente do fluxo e torna invisível */
+      **pointer-events: none;** /* Garante que não possa ser clicável/interagível */
     }
+    
+    /* *** ADICIONADO ESTE ESTILO para mostrar apenas os resultados da pesquisa Google. ***
+       O Google Custom Search Engine (CSE) injeta um campo de pesquisa e depois os resultados.
+       Para esconder apenas o campo de pesquisa e manter os resultados, 
+       precisamos manter o .gcse-search visível, mas esconder o elemento filho que é o campo de busca.
+       A estrutura padrão do CSE é geralmente: .gcse-search > .gsc-control-cse > .gsc-branding, .gsc-ad, .gsc-result-box, etc.
+       Vamos tentar esconder o .gsc-input-box que é o campo de pesquisa em si.
+    */
+    
+    .gsc-search-box {
+        **display: none !important;**
+    }
+    
+    /* Para a versão de Resultados Apenas, o CSE costuma injetar uma caixa de pesquisa mesmo assim. */
+    /* Vamos aplicar a mudança para o elemento de entrada de texto que o CSE injeta */
+    
+    .gsc-input-box {
+        **display: none !important;**
+    }
+    .gsc-search-button-v2 {
+        **display: none !important;**
+    }
+
+    /* Outra alternativa para garantir que apenas os resultados apareçam */
+    /* O código abaixo tenta exibir o .gcse-search, mas esconder a barra de pesquisa dentro dele */
+    /* Você pode precisar testar qual seletor funciona melhor na prática */
+    /*
+    .gcse-search {
+      margin-top: 40px;
+      width: 100%;
+    }
+    
+    .gsc-search-box, .gsc-input-box, .gsc-search-button-v2 {
+        display: none !important; 
+        pointer-events: none;
+    }
+    */
+    
+    /* Como o seu `doSearch()` executa a pesquisa, vamos apenas esconder a caixa de pesquisa injetada. 
+       Para o seu código, a melhor abordagem é **remover a linha de código que injeta a barra de pesquisa**.
+    */
+
   </style>
 </head>
 <body>
@@ -87,16 +132,36 @@
   <button onclick="doSearch()">Buscar</button>
 
   <script async src="https://cse.google.com/cse.js?cx=456655f16500e46db"></script>
-  <div class="gcse-search"></div>
-
-  <script>
+  <div class="gcse-search"></div> <script>
     function doSearch() {
       const query = document.getElementById('searchInput').value;
       if (query.trim() !== "") {
-        const element = google.search.cse.element.getElement('standard0');
-        if (element) element.execute(query);
+        // O elemento 'standard0' é o ID padrão que o CSE usa quando você não especifica um ID
+        // Como o seu código só tem um div com a classe 'gcse-search', ele assume esse.
+        // Se você não vê o 'standard0' funcionando, tente o código alternativo abaixo.
+        
+        // 1. Tenta o método padrão de execução do Google CSE
+        if (typeof google !== 'undefined' && google.search && google.search.cse && google.search.cse.element) {
+             const element = google.search.cse.element.getElement('standard0');
+             if (element) {
+                 element.execute(query);
+             } else {
+                 console.error("Elemento CSE não encontrado. Verifique a documentação do CSE para a execução.");
+             }
+        } else {
+             console.error("Objeto Google Search não carregado completamente.");
+        }
+        
+        // **OPÇÃO ALTERNATIVA (MAIS SEGURA PARA RESULTADOS APENAS) **
+        // Se o método acima falhar, você pode precisar configurar seu CSE para "Resultados Apenas".
+        // E injetar o elemento com um ID específico:
+        /*
+        const element = google.search.cse.element.get='results';
+        element.execute(query);
+        */
       }
     }
   </script>
 </body>
 </html>
+
