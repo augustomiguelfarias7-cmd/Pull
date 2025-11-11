@@ -14,8 +14,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh; 
-      padding-bottom: 50px;
+      height: 100vh;
     }
 
     .logo {
@@ -24,7 +23,6 @@
       color: #4285F4;
       letter-spacing: -1px;
       margin-bottom: 30px;
-      margin-top: 50px;
     }
 
     .logo span:nth-child(2) { color: #EA4335; }
@@ -71,22 +69,9 @@
       background-color: #f1f3f4;
     }
 
-    .gcse-container {
+    .gcse-search {
       margin-top: 40px;
-      width: 800px; /* Aumentei um pouco para melhor visualização dos resultados */
-      max-width: 90%;
-      text-align: left; /* Garante que o texto dos resultados fique alinhado corretamente */
-    }
-
-    /* Regras para ocultar os elementos nativos do CSE */
-    .gsc-search-box, form.gsc-search-box, .gsc-input-box, .gsc-search-button-v2, .gsc-branding, .gsc-control-cse *[id^="gsc-iw-"], .gsc-control-cse table {
-        display: none !important;
-        pointer-events: none !important;
-    }
-    
-    .gsc-control-cse {
-        width: 100% !important;
-        display: block !important; /* Mantenha o container principal visível */
+      width: 100%;
     }
   </style>
 </head>
@@ -96,48 +81,22 @@
   </div>
 
   <div class="search-box">
-    <input id="searchInput" type="text" placeholder="Pesquise no Pull..." onkeydown="handleKeyPress(event)">
+    <input id="searchInput" type="text" placeholder="Pesquise no Pull...">
   </div>
 
   <button onclick="doSearch()">Buscar</button>
 
   <script async src="https://cse.google.com/cse.js?cx=456655f16500e46db"></script>
-  
-  <div class="gcse-searchresults-only gcse-container" id="cse-results-area"></div>
+  <div class="gcse-search"></div>
 
   <script>
     function doSearch() {
       const query = document.getElementById('searchInput').value;
-      
       if (query.trim() !== "") {
-        // Verifica se o objeto do Google CSE está disponível globalmente
-        if (typeof google !== 'undefined' && google.search && google.search.cse && google.search.cse.element) {
-             // O nome do elemento DEVE ser igual ao ID da div onde os resultados serão exibidos
-             const element = google.search.cse.element.getElement('cse-results-area');
-             
-             if (element) {
-                 // Dispara a busca usando o método execute() do objeto CSE
-                 element.execute(query);
-             } else {
-                 console.error("Erro: O elemento de resultados do Google CSE não foi carregado corretamente.");
-                 alert("Erro ao carregar o mecanismo de busca. Tente recarregar a página.");
-             }
-        } else {
-             console.error("Erro: O script principal do Google Custom Search Engine não carregou.");
-             alert("Aguardando o carregamento do mecanismo de busca. Tente novamente em alguns segundos.");
-        }
+        const element = google.search.cse.element.getElement('standard0');
+        if (element) element.execute(query);
       }
-    }
-    
-    // Opcional: Permite buscar ao pressionar "Enter"
-    function handleKeyPress(event) {
-        if (event.key === 'Enter') {
-            doSearch();
-        }
     }
   </script>
 </body>
 </html>
-
-
-
