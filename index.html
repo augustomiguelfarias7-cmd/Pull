@@ -73,19 +73,13 @@
       opacity: 0.9;
     }
 
-    /* Oculta a barra de busca padrão do Google CSE */
+    /* Esconde completamente o CSE invisível */
     .gsc-control-cse {
       display: none !important;
-      height: 0;
-      overflow: hidden;
-      visibility: hidden;
     }
 
-    /* Resultados */
     .gcse-searchresults-only {
-      margin-top: 40px;
-      width: 90%;
-      max-width: 1000px;
+      display: none;
     }
   </style>
 </head>
@@ -100,39 +94,35 @@
 
   <button onclick="doSearch()">Buscar</button>
 
-  <!-- Google CSE -->
+  <!-- Google CSE (invisível, apenas para funcionar no site de resultados) -->
   <script async src="https://cse.google.com/cse.js?cx=456655f16500e46db"></script>
 
-  <!-- Resultados -->
   <div class="gcse-searchresults-only" data-enableHistory="true" data-queryParameterName="q"></div>
 
   <script>
-    // Função de busca principal
     function doSearch() {
-      const query = document.getElementById('searchInput').value;
-      if (query.trim() !== "") {
-        // Redireciona a URL adicionando o parâmetro q
-        const newUrl = window.location.origin + window.location.pathname + '?q=' + encodeURIComponent(query);
-        window.history.pushState({}, '', newUrl);
-        google.search.cse.element.render({ div: "search-results", tag: 'searchresults-only' });
-        google.search.cse.element.getElement('searchresults-only0').execute(query);
-        document.querySelector('.gcse-searchresults-only').scrollIntoView({ behavior: 'smooth' });
+      const query = document.getElementById('searchInput').value.trim();
+      if (query !== "") {
+        // Vai para a página de resultados
+        window.location.href = "https://augustomiguelfarias7-cmd.github.io/Pull/?q=" + encodeURIComponent(query);
       }
     }
 
-    // Permite buscar com Enter
+    // Buscar com Enter
     document.getElementById('searchInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') doSearch();
     });
 
-    // Se tiver "?q=..." na URL, faz a busca automática
+    // Mostrar resultados se tiver ?q=
     window.onload = function() {
       const params = new URLSearchParams(window.location.search);
       const query = params.get('q');
       if (query) {
         document.getElementById('searchInput').value = query;
+        // Espera o script carregar e executa
         setTimeout(() => {
-          google.search.cse.element.getElement('searchresults-only0').execute(query);
+          const searchEl = google.search.cse.element.getElement('searchresults-only0');
+          if (searchEl) searchEl.execute(query);
         }, 800);
       }
     };
