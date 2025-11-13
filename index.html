@@ -12,9 +12,10 @@
       font-family: 'Arial', sans-serif;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding-top: 60px;
     }
 
     .logo {
@@ -23,6 +24,8 @@
       color: #4285F4;
       letter-spacing: -1px;
       margin-bottom: 30px;
+      cursor: pointer;
+      user-select: none;
     }
 
     .logo span:nth-child(2) { color: #EA4335; }
@@ -55,28 +58,39 @@
     }
 
     button {
-      background-color: #f8f9fa;
+      background: linear-gradient(90deg, #4285F4, #34A853);
+      color: white;
       border: none;
-      padding: 10px 20px;
-      margin-top: 30px;
-      border-radius: 5px;
-      font-size: 14px;
+      padding: 10px 25px;
+      border-radius: 25px;
+      font-size: 15px;
       cursor: pointer;
       transition: 0.2s;
+      margin-top: 30px;
     }
 
     button:hover {
-      background-color: #f1f3f4;
+      opacity: 0.9;
     }
 
-    .gcse-search {
+    /* Oculta a barra de busca padrão do Google CSE */
+    .gsc-control-cse {
+      display: none !important;
+      height: 0;
+      overflow: hidden;
+      visibility: hidden;
+    }
+
+    /* Resultados */
+    .gcse-searchresults-only {
       margin-top: 40px;
-      width: 100%;
+      width: 90%;
+      max-width: 1000px;
     }
   </style>
 </head>
 <body>
-  <div class="logo">
+  <div class="logo" onclick="window.location.href='https://augustomiguelfarias7-cmd.github.io/Pull/'">
     <span>P</span><span>u</span><span>l</span><span>l</span><span>.</span><span>AI</span>
   </div>
 
@@ -86,17 +100,42 @@
 
   <button onclick="doSearch()">Buscar</button>
 
+  <!-- Google CSE -->
   <script async src="https://cse.google.com/cse.js?cx=456655f16500e46db"></script>
-  <div class="gcse-search"></div>
+
+  <!-- Resultados -->
+  <div class="gcse-searchresults-only" data-enableHistory="true" data-queryParameterName="q"></div>
 
   <script>
+    // Função de busca principal
     function doSearch() {
       const query = document.getElementById('searchInput').value;
       if (query.trim() !== "") {
-        const element = google.search.cse.element.getElement('standard0');
-        if (element) element.execute(query);
+        // Redireciona a URL adicionando o parâmetro q
+        const newUrl = window.location.origin + window.location.pathname + '?q=' + encodeURIComponent(query);
+        window.history.pushState({}, '', newUrl);
+        google.search.cse.element.render({ div: "search-results", tag: 'searchresults-only' });
+        google.search.cse.element.getElement('searchresults-only0').execute(query);
+        document.querySelector('.gcse-searchresults-only').scrollIntoView({ behavior: 'smooth' });
       }
     }
+
+    // Permite buscar com Enter
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') doSearch();
+    });
+
+    // Se tiver "?q=..." na URL, faz a busca automática
+    window.onload = function() {
+      const params = new URLSearchParams(window.location.search);
+      const query = params.get('q');
+      if (query) {
+        document.getElementById('searchInput').value = query;
+        setTimeout(() => {
+          google.search.cse.element.getElement('searchresults-only0').execute(query);
+        }, 800);
+      }
+    };
   </script>
 </body>
 </html>
